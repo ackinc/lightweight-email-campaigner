@@ -1,0 +1,14 @@
+{
+  "name": "khonvo-hiring-challenge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "mysql2": "^1.6.4",
+    "sequelize": "^4.42.0"
+  },
+  "scripts": {
+    "seed": "node ./scripts/seed.js"
+  }
+}
