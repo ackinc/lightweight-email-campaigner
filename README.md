@@ -22,6 +22,7 @@
     - attachments in campaign emails
   - Edge-case handling
     - if the call to save a new user (with refresh token) to DB fails, we'll never get a refresh token
+      - this will not be a problem until future scheduling of campaigns is implemented
     - oauth refresh token invalidation
     - jwt extension (when used near expiry date)
   - Security
