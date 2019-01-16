@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/:id', (req, res) => {
   const now = new Date();
   db.query(`UPDATE campaignleads
-            SET openAt=${now}, updatedAt=${now}
+            SET delivered=${true}, openAt=${now}, updatedAt=${now}
             WHERE tracker=${req.params.id}
             AND openAt IS NULL`);
   res.end();
