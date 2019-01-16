@@ -18,20 +18,20 @@ router.post('/', async (req, res, next) => {
     const { firstname, lastname, email } =
       await oauthClientService.getUserDetailsFromIdToken(idToken);
 
-    await db.models.User
-      .findOrCreate({ where: { email }, defaults: { firstname, lastname } })
-      .spread(user => {
-        user.accessToken = accessToken;
+    const [user] = await db.models.User
+      .findOrCreate({ where: { email }, defaults: { firstname, lastname } });
 
-        // if this user has already authorized our app,
-        //   google will not supply another refresh token
-        user.refreshToken = refreshToken || user.refreshToken;
-
-        user.save();
-      });
-
-    const token = await tokenService.generate({ email })
+    const token = await tokenService.generate({ id: user.id, email })
     res.json({ token });
+
+    // if this user has already authorized our app,
+    //   google will not supply another refresh token
+    user.refreshToken = refreshToken || user.refreshToken;
+    user.accessToken = accessToken;
+
+    // TODO: if this call fails for a new user, we'll need to find
+    //   some other way of getting a refresh token for him/her
+    user.save();
   } catch (err) {
     next(err);
   }
