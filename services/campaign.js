@@ -7,8 +7,8 @@ function executeCampaign(user, campaign, leads) {
   sendMails(user.email, leads.map(l => l.email), subject, body);
 
   db.models.CampaignLead.bulkCreate(leads.map(lead => ({
-    campaign_id: campaign.id,
-    lead_id: lead.id,
+    campaignId: campaign.id,
+    leadId: lead.id,
   })));
 }
 

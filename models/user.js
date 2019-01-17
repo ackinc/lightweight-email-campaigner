@@ -10,8 +10,6 @@ module.exports = (sequelize, DataTypes) => sequelize.define(
         isEmail: true,
       },
     },
-    accessToken: DataTypes.STRING,
-    refreshToken: DataTypes.STRING,
   },
   {
     timestamps: true,

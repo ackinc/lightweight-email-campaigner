@@ -21,7 +21,7 @@ router.post('/', retrieveUser, async (req, res, next) => {
   let campaign;
   try {
     campaign = await db.models.Campaign.create({
-      name, subject, body, user_id: req.user.id,
+      name, subject, body, userId: req.user.id,
     });
   } catch (e) {
     return next(e);

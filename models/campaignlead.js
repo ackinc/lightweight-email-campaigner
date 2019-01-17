@@ -5,14 +5,14 @@ module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
     'campaignlead',
     {
-      campaign_id: {
+      campaignId: {
         type: DataTypes.INTEGER,
         references: {
           model: Campaign,
           key: 'id',
         },
       },
-      lead_id: {
+      leadId: {
         type: DataTypes.INTEGER,
         references: {
           model: Lead,
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         default: false,
       },
-      tracker: DataTypes.STRING,
+      sendgridMailId: DataTypes.STRING,
       openAt: DataTypes.DATE,
     },
     {

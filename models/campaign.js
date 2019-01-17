@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       name: DataTypes.STRING,
       subject: DataTypes.STRING,
       body: DataTypes.TEXT,
-      user_id: {
+      userId: {
         type: DataTypes.INTEGER,
         references: {
           model: User,
