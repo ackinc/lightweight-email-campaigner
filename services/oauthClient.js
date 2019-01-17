@@ -3,8 +3,8 @@ const { OAuth2Client } = require('google-auth-library');
 const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = process.env;
 const client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
-async function exchangeAuthCodeForTokens(code) {
-  const r = await client.getToken(code);
+async function exchangeAuthCodeForTokens(authCode) {
+  const r = await client.getToken(authCode);
 
   return {
     accessToken: r.tokens.access_token,
