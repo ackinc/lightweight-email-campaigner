@@ -6,10 +6,9 @@ const router = express.Router();
 
 // This route is hit whenever a lead opens an email we sent them
 router.get('/:id', (req, res) => {
-  const now = new Date();
   db.query(`UPDATE campaignleads
-            SET delivered=${true}, openAt=${now}, updatedAt=${now}
-            WHERE tracker=${req.params.id}
+            SET delivered=true, openAt=NOW(), updatedAt=NOW()
+            WHERE tracker='${req.params.id}'
             AND openAt IS NULL`);
   res.end();
 });
