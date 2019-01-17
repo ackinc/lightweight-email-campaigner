@@ -1,6 +1,7 @@
 # Khonvo Hiring Challenge
 
 [Problem statement](https://docs.google.com/document/d/1y4EiJWGMrg7ArXrEyvXppjl4JfCUfB3dHi8exHxYJB0/edit)
+[Heroku deployment](https://khonvo-challenge-backend.herokuapp.com/)
 
 ##### Notes/Rationale
 - Why RDBMS/SQL, and normalized data models?
