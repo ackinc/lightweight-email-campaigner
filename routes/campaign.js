@@ -7,6 +7,18 @@ const { executeCampaign } = require('../services/campaign');
 const router = express.Router();
 router.use(ensureAuthenticated);
 
+// Gets a single campaign's detailed view, or a summarized view of all campaigns
+router.get('/:id?', async (req, res) => {
+  const showCampaignList = req.params.id === undefined;
+
+  if (showCampaignList) {
+    const campaigns = await db.models.Campaign.findAll();
+    res.json({ campaigns });
+  } else {
+    res.end();
+  }
+});
+
 // New campaign
 router.post('/', async (req, res, next) => {
   const {
