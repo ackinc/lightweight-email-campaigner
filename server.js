@@ -10,7 +10,7 @@ const trackerRouter = require('./routes/tracker');
 const app = express();
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', (req, res) => res.send('Hello World!!'));
 
 app.use('/auth', authRouter);
 app.use('/campaigns', campaignRouter);
