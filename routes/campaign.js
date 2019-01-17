@@ -7,16 +7,30 @@ const { executeCampaign } = require('../services/campaign');
 const router = express.Router();
 router.use(ensureAuthenticated);
 
-// Gets a single campaign's detailed view, or a summarized view of all campaigns
-router.get('/:id?', async (req, res) => {
-  const showCampaignList = req.params.id === undefined;
+// Gets a summarized view of all campaigns
+router.get('/', async (req, res) => {
+  const campaigns = await db.query(`
+    SELECT t1.id, name, subject, body,
+            COUNT(*) n_leads,
+            COUNT(deliveredAt IS NOT NULL) n_delivered,
+            COUNT(openedAt IS NOT NULL) n_opened
+    FROM khonvo_test.campaigns t1
+    INNER JOIN khonvo_test.campaignleads t2 ON t1.id = t2.campaignId
+    WHERE t1.userId = ${req.decoded.id}
+    GROUP BY t1.id
+  `, { type: db.QueryTypes.SELECT });
+  res.json({ campaigns });
+});
 
-  if (showCampaignList) {
-    const campaigns = await db.models.Campaign.findAll();
-    res.json({ campaigns });
-  } else {
-    res.end();
-  }
+// Get the leads who were sent emails for the specified campaign
+router.get('/:campaign_id/leads', async (req, res) => {
+  const leads = await db.query(`
+    SELECT t1.id, email, deliveredAt, openedAt
+    FROM leads t1
+    INNER JOIN campaignleads t2 ON t2.leadId = t1.id
+    WHERE t2.campaignId = ${req.params.campaign_id}
+  `, { type: db.QueryTypes.SELECT });
+  res.json({ leads });
 });
 
 // New campaign
