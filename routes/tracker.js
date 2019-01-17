@@ -11,6 +11,9 @@ router.get('/', (req, res) => {
 
   const events = req.body;
   events.forEach(({ event, tracker, timestamp }) => {
+    const allowedEvents = ['delivered', 'open'];
+    if (!allowedEvents.includes(event)) return;
+
     const fieldToUpdate = event === 'delivered' ? 'deliveredAt' : 'openedAt';
     const eventTime = tz(timestamp * 1000).utc().format('YYYY-MM-DD HH:mm:ss');
     db.query(`UPDATE campaignleads
