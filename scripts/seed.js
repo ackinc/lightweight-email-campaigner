@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-const db = require('../db');
+const db = require('../common/db');
 
 db.sync({ force: true })
   .then(() => {

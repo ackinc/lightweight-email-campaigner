@@ -1,4 +1,4 @@
-const db = require('../db');
+const { User } = require('../common/db').models;
 
 // Retrieves the current logged-in user from DB and makes
 //   it available at req.user
@@ -16,7 +16,7 @@ async function retrieveUser(req, res, next) {
   }
 
   try {
-    req.user = await db.models.User.findById(req.decoded.id);
+    req.user = await User.findById(req.decoded.id);
   } catch (e) {
     res.status(500).json({ error: 'SERVER_ERROR' });
     return next(e);

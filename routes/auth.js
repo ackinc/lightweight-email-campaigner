@@ -1,6 +1,6 @@
 const express = require('express');
 
-const db = require('../db');
+const { User } = require('../common/db').models;
 const tokenService = require('../services/jwt');
 const oauthClientService = require('../services/oauthClient');
 
@@ -24,8 +24,7 @@ router.post('/', async (req, res, next) => {
       firstname, lastname, email,
     } = await oauthClientService.getUserDetailsFromIdToken(idToken);
 
-    const [user] = await db.models.User
-      .findOrCreate({ where: { email }, defaults: { firstname, lastname } });
+    const [user] = await User.findOrCreate({ where: { email }, defaults: { firstname, lastname } });
 
     const token = await tokenService.generate({ id: user.id, email });
 

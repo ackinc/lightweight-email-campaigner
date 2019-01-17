@@ -10,7 +10,7 @@ sequelize.authenticate()
     throw err;
   });
 
-const modelsDir = path.join(__dirname, 'models');
+const modelsDir = path.join(__dirname, '../models');
 const models = {};
 models.Campaign = sequelize.import(path.join(modelsDir, 'campaign'));
 models.CampaignLead = sequelize.import(path.join(modelsDir, 'campaignlead'));

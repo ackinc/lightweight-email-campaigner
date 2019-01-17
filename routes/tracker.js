@@ -1,7 +1,7 @@
 const express = require('express');
 const tz = require('moment-timezone');
 
-const db = require('../db');
+const db = require('../common/db');
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
-const db = require('../db');
+const { CampaignLead } = require('../common/db').models;
 const { sendPersonalizedMails } = require('./mail');
-const { getRandomString } = require('../utils');
+const { getRandomString } = require('../common/utils');
 
 // Adds trackers for each mail, inserts appropriate campaign-lead links in DB
 //   and sends the emails
@@ -11,7 +11,7 @@ async function executeCampaign(userEmail, campaign, leads) {
 
   leads.forEach((l) => { trackers[l.id] = getRandomString(trackerSize); });
 
-  await db.models.CampaignLead.bulkCreate(leads.map(l => ({
+  await CampaignLead.bulkCreate(leads.map(l => ({
     campaignId,
     leadId: l.id,
     tracker: trackers[l.id],

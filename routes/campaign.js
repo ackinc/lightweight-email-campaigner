@@ -1,6 +1,6 @@
 const express = require('express');
 
-const db = require('../db');
+const db = require('../common/db');
 const ensureAuthenticated = require('../middleware/ensureAuthenticated');
 const { executeCampaign } = require('../services/campaign');
 
