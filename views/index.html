@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Khonvo Challenge - Backend</title>
+  <style>
+    * {
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 12px;
+    }
+
+    h1 {
+      padding-left: 5px;
+    }
+
+    table thead {
+      font-weight: bold;
+    }
+
+    table td {
+      padding: 2px 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Welcome. The following API endpoints are available:</h1>
+  <table>
+    <thead>
+      <tr>
+        <td>Method</td>
+        <td>URL</td>
+        <td>Description</td>
+        <td>Needs Authentication?</td>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>POST</td>
+        <td>/auth</td>
+        <td>Register/Sign-in</td>
+        <td>No</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+        <td>/campaigns</td>
+        <td>Get a summarized view of all campaigns sent by authenticated user</td>
+        <td>Yes</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+        <td>/campaigns</td>
+        <td>Create new campaign</td>
+        <td>Yes</td>
+      </tr>
+
+      <tr>
+        <td>GET</td>
+        <td>/campaigns/:id/leads</td>
+        <td>retrieve the leads that were sent mails in campaign with speficied ID</td>
+        <td>Yes</td>
+      </tr>
+
+      <tr>
+        <td>POST</td>
+        <td>/tracker</td>
+        <td>Sendgrid webhook to track email delivery/open</td>
+        <td>No</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+
+</html>
