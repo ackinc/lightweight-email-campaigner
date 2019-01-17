@@ -11,14 +11,12 @@ const { User } = require('../common/db').models;
 //   database error
 async function retrieveUser(req, res, next) {
   if (!req.decoded) {
-    res.status(500).json({ error: 'SERVER_ERROR' });
     return next(new Error('retrieveUser was called without ensureAuthenticated check'));
   }
 
   try {
     req.user = await User.findById(req.decoded.id);
   } catch (e) {
-    res.status(500).json({ error: 'SERVER_ERROR' });
     return next(e);
   }
 

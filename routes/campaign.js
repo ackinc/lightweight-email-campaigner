@@ -24,7 +24,6 @@ router.get('/', async (req, res, next) => {
     `, { type: db.QueryTypes.SELECT });
     return res.json({ campaigns });
   } catch (e) {
-    res.status(500).error({ error: 'SERVER_ERROR' });
     return next(e);
   }
 });
@@ -62,7 +61,6 @@ router.get('/:campaign_id/leads', async (req, res, next) => {
 
     return res.json({ leads });
   } catch (e) {
-    res.status(500).error({ error: 'SERVER_ERROR' });
     return next(e);
   }
 });
@@ -89,7 +87,6 @@ router.post('/', async (req, res, next) => {
 
   const { id: userId, email: userEmail } = req.decoded;
   if (!userId || !userEmail) {
-    res.status(500).json({ error: 'SERVER_ERROR' });
     return next(new Error('req.decoded missing in create-campaign route'));
   }
 
@@ -114,7 +111,6 @@ router.post('/', async (req, res, next) => {
 
     return res.json();
   } catch (e) {
-    res.status(500).json({ error: 'SERVER_ERROR' });
     return next(e);
   }
 });

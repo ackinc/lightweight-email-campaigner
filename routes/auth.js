@@ -34,7 +34,6 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ error: 'TOKEN_INVALID' });
     }
 
-    res.status(500).json({ error: 'SERVER_ERROR' });
     return next(e);
   }
 });

@@ -8,6 +8,7 @@ const path = require('path');
 const authRouter = require('./routes/auth');
 const campaignRouter = require('./routes/campaign');
 const trackerRouter = require('./routes/tracker');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 app.use(bodyParser.json());
@@ -18,6 +19,8 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, './views/index.html
 app.use('/auth', authRouter);
 app.use('/campaigns', campaignRouter);
 app.use('/tracker', trackerRouter);
+
+app.use(errorHandler);
 
 const { PORT } = process.env;
 
