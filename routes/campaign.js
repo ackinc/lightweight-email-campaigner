@@ -10,7 +10,7 @@ router.use(ensureAuthenticated);
 // Gets a summarized view of all campaigns
 router.get('/', async (req, res) => {
   const campaigns = await db.query(`
-    SELECT t1.id, name, subject, body,
+    SELECT t1.id, name, subject, body, t1.createdAt
             COUNT(*) n_leads,
             COUNT(deliveredAt IS NOT NULL) n_delivered,
             COUNT(openedAt IS NOT NULL) n_opened
