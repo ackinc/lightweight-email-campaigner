@@ -1,3 +1,8 @@
+DROP TABLE `campaignleads`;
+DROP TABLE `leads`;
+DROP TABLE `campaigns`;
+DROP TABLE `users`;
+
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `firstname` varchar(255) DEFAULT NULL,
