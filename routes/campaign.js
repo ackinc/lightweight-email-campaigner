@@ -2,14 +2,13 @@ const express = require('express');
 
 const db = require('../db');
 const ensureAuthenticated = require('../middleware/ensureAuthenticated');
-const retrieveUser = require('../middleware/retrieveUser');
 const { executeCampaign } = require('../services/campaign');
 
 const router = express.Router();
 router.use(ensureAuthenticated);
 
 // New campaign
-router.post('/', retrieveUser, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const {
     name, subject, body, leads,
   } = req.body;
@@ -18,12 +17,16 @@ router.post('/', retrieveUser, async (req, res, next) => {
     return res.status(400).json({ error: 'REQUIRED_INPUT_MISSING' });
   }
 
+  const { id: userId, email: userEmail } = req.decoded;
+
   let campaign;
   try {
     campaign = await db.models.Campaign.create({
-      name, subject, body, userId: req.user.id,
+      name, subject, body, userId,
     });
   } catch (e) {
+    // if there was an error creating the campaign, we
+    //   bail out without sending any emails
     return next(e);
   }
 
@@ -34,7 +37,7 @@ router.post('/', retrieveUser, async (req, res, next) => {
 
   // get the Lead objects for all leads involved in this campaign
   const allLeads = await db.models.Lead.findAll({ where: { email: leads } });
-  executeCampaign(req.user, campaign, allLeads);
+  executeCampaign(userEmail, campaign, allLeads);
 
   return undefined;
 });

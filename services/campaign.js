@@ -1,10 +1,10 @@
 const db = require('../db');
 const { sendMails } = require('./mail');
 
-function executeCampaign(user, campaign, leads) {
+function executeCampaign(userEmail, campaign, leads) {
   const { subject, body } = campaign;
 
-  sendMails(user.email, leads.map(l => l.email), subject, body);
+  sendMails(userEmail, leads.map(l => l.email), subject, body);
 
   db.models.CampaignLead.bulkCreate(leads.map(lead => ({
     campaignId: campaign.id,
