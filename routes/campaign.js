@@ -67,39 +67,56 @@ router.get('/:campaign_id/leads', async (req, res, next) => {
   }
 });
 
-// New campaign
+// Creates and executes a new campaign
+// Input
+//   req.body.name - name for campaign (for internal reference)
+//   req.body.subject - subject of email to be sent
+//   req.body.body - body of email to be sent
+//   req.body.leads - array of emails to which this campaign must be sent
+// Fails with
+//   400
+//     inputs missing
+//   500
+//     database error
+//     sendgrid error
 router.post('/', async (req, res, next) => {
   const {
     name, subject, body, leads,
   } = req.body;
-
-  if (!name || !subject || !body || !leads.length) {
-    return res.status(400).json({ error: 'REQUIRED_INPUT_MISSING' });
+  if (!name || !subject || !body || !Array.isArray(leads) || leads.length === 0) {
+    return res.status(400).json({ error: 'BAD_INPUTS' });
   }
 
   const { id: userId, email: userEmail } = req.decoded;
-
-  let campaign;
-  try {
-    campaign = await db.models.Campaign.create({
-      name, subject, body, userId,
-    });
-  } catch (e) {
-    // if there was an error creating the campaign, we
-    //   bail out without sending any emails
-    return next(e);
+  if (!userId || !userEmail) {
+    res.status(500).json({ error: 'SERVER_ERROR' });
+    return next(new Error('req.decoded missing in create-campaign route'));
   }
 
-  res.end(); // no need to keep user waiting until all mails are sent
+  try {
+    const campaign = await db.models.Campaign.create({
+      name, subject, body, userId,
+    });
 
-  // insert rows for Leads not already in DB
-  await db.models.Lead.bulkCreate(leads.map(l => ({ email: l })), { ignoreDuplicates: true });
+    // insert rows for leads not already in DB
+    // we could continue executing the campaign if this query failed,
+    //   leads that were not already in the DB would not be sent the email
+    // but it is probably better to let the user re-try the campaign later
+    await db.models.Lead.bulkCreate(
+      leads.map(l => ({ email: l })),
+      { ignoreDuplicates: true },
+    );
 
-  // get the Lead objects for all leads involved in this campaign
-  const allLeads = await db.models.Lead.findAll({ where: { email: leads } });
-  executeCampaign(userEmail, campaign, allLeads);
+    // we need the full lead objects to be able to insert campaign-lead links later
+    const allLeads = await db.models.Lead.findAll({ where: { email: leads } });
 
-  return undefined;
+    await executeCampaign(userEmail, campaign, allLeads);
+
+    return res.json();
+  } catch (e) {
+    res.status(500).json({ error: 'SERVER_ERROR' });
+    return next(e);
+  }
 });
 
 module.exports = router;
