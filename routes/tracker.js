@@ -6,7 +6,7 @@ const db = require('../db');
 const router = express.Router();
 
 // This route is the webhook we're providing to sendgrid for event capturing
-router.get('/', (req, res) => {
+router.post('/', (req, res) => {
   res.end();
 
   const events = req.body;
