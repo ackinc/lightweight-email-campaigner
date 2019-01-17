@@ -9,8 +9,7 @@ function sendPersonalizedMails(sender, personalizations, subject, body) {
     subject,
     text: body,
   };
-  sgMail.sendMultiple(msg)
-    .catch(e => console.error(e)); // eslint-disable-line no-console
+  return sgMail.sendMultiple(msg);
 }
 
 module.exports = { sendPersonalizedMails };
