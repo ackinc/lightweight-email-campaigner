@@ -13,7 +13,7 @@ router.use(ensureAuthenticated);
 router.get('/', async (req, res, next) => {
   try {
     const campaigns = await db.query(`
-      SELECT t1.id, name, subject, body, t1.createdAt
+      SELECT t1.id, name, subject, body, t1.createdAt,
               COUNT(*) n_leads,
               COUNT(deliveredAt IS NOT NULL) n_delivered,
               COUNT(openedAt IS NOT NULL) n_opened
