@@ -1,14 +1,25 @@
 const db = require('../db');
-const { sendMails } = require('./mail');
+const { sendPersonalizedMails } = require('./mail');
+const { getRandomString } = require('../utils');
 
 function executeCampaign(userEmail, campaign, leads) {
   const { subject, body } = campaign;
+  const trackers = {};
+  const trackerSize = 20;
 
-  sendMails(userEmail, leads.map(l => l.email), subject, body);
+  leads.forEach((l) => { trackers[l.id] = getRandomString(trackerSize); });
 
-  db.models.CampaignLead.bulkCreate(leads.map(lead => ({
+  sendPersonalizedMails(
+    userEmail,
+    leads.map(l => ({ to: l.email, customArgs: { tracker: trackers[l.id] } })),
+    subject,
+    body,
+  );
+
+  db.models.CampaignLead.bulkCreate(leads.map(l => ({
     campaignId: campaign.id,
-    leadId: lead.id,
+    leadId: l.id,
+    tracker: trackers[l.id],
   })));
 }
 

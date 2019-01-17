@@ -2,10 +2,10 @@ const sgMail = require('@sendgrid/mail');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-function sendMails(sender, recipients, subject, body) {
+function sendPersonalizedMails(sender, personalizations, subject, body) {
   const msg = {
     from: sender,
-    to: recipients,
+    personalizations,
     subject,
     text: body,
   };
@@ -13,4 +13,4 @@ function sendMails(sender, recipients, subject, body) {
     .catch(e => console.error(e)); // eslint-disable-line no-console
 }
 
-module.exports = { sendMails };
+module.exports = { sendPersonalizedMails };
