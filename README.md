@@ -27,4 +27,5 @@
     - jwt extension (when used near expiry date)
   - Security
     - HTTPS
+    - Only enable CORS for authorized frontends
     - XSS protection (if admin role being implemented)
