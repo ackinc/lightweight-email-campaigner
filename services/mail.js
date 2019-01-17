@@ -35,8 +35,12 @@ function sendMails(sender, mailsToSend, cb) {
       html: body,
     };
     transport.sendMail(mailOpts, (err) => {
-      if (err) failure.push(lead);
-      else success.push(lead);
+      if (err) {
+        failure.push(lead);
+        console.error(err); // eslint-disable-line no-console
+      } else {
+        success.push(lead);
+      }
       complete();
     });
   });
