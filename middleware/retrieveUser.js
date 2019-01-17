@@ -1,21 +1,28 @@
 const db = require('../db');
 
 // Retrieves the current logged-in user from DB and makes
-//   him/her available at req.user
+//   it available at req.user
+// This middleware relies on ensureAuthenticated putting the
+//   decoded token at req.decode
+// Input
+//   req.decoded - the decoded JWT
+// Fails with 500 response if
+//   called before ensureAuthenticated
+//   database error
 async function retrieveUser(req, res, next) {
   if (!req.decoded) {
     res.status(500).json({ error: 'SERVER_ERROR' });
-    throw new Error('retrieveUser was called without ensureAuthenticated check');
+    return next(new Error('retrieveUser was called without ensureAuthenticated check'));
   }
 
   try {
     req.user = await db.models.User.findById(req.decoded.id);
-    next();
   } catch (e) {
     res.status(500).json({ error: 'SERVER_ERROR' });
+    return next(e);
   }
 
-  return undefined;
+  return next();
 }
 
 module.exports = retrieveUser;
