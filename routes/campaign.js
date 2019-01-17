@@ -29,15 +29,42 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// Get the leads who were sent emails for the specified campaign
-router.get('/:campaign_id/leads', async (req, res) => {
-  const leads = await db.query(`
-    SELECT t1.id, email, deliveredAt, openedAt
-    FROM leads t1
-    INNER JOIN campaignleads t2 ON t2.leadId = t1.id
-    WHERE t2.campaignId = ${req.params.campaign_id}
-  `, { type: db.QueryTypes.SELECT });
-  res.json({ leads });
+// Responds with the leads who were sent emails for the specified campaign
+// Input
+//   req.params.campaign_id - the ID of the campaign whose leads are wanted
+// Fails with
+//   403 response if
+//     current user is not allowed access to specified campaign
+//   404 response if
+//     no campaign was found with supplied ID
+//   500 response if
+//     database error
+router.get('/:campaign_id/leads', async (req, res, next) => {
+  try {
+    const leads = await db.query(`
+      SELECT t1.userId userId, t3.id leadId, email, deliveredAt, openedAt
+      FROM campaigns t1
+      INNER JOIN campaignleads t2 ON t2.campaignId = t1.id
+      INNER JOIN leads t3 ON t2.leadId = t3.id
+      WHERE t1.id = ${req.params.campaign_id}
+    `, { type: db.QueryTypes.SELECT });
+
+    if (leads.length === 0) {
+      return res.status(404).json({ error: 'NOT_FOUND' });
+    }
+
+    // check if current user is allowed access to this campaign
+    if (leads[0].userId !== req.decoded.id) {
+      return res.status(403).json({ error: 'NOT_ALLOWED' });
+    }
+
+    leads.forEach(l => delete l.userId); // eslint-disable-line no-param-reassign
+
+    return res.json({ leads });
+  } catch (e) {
+    res.status(500).error({ error: 'SERVER_ERROR' });
+    return next(e);
+  }
 });
 
 // New campaign
