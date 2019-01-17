@@ -7,19 +7,26 @@ const { executeCampaign } = require('../services/campaign');
 const router = express.Router();
 router.use(ensureAuthenticated);
 
-// Gets a summarized view of all campaigns
-router.get('/', async (req, res) => {
-  const campaigns = await db.query(`
-    SELECT t1.id, name, subject, body, t1.createdAt
-            COUNT(*) n_leads,
-            COUNT(deliveredAt IS NOT NULL) n_delivered,
-            COUNT(openedAt IS NOT NULL) n_opened
-    FROM khonvo_test.campaigns t1
-    INNER JOIN khonvo_test.campaignleads t2 ON t1.id = t2.campaignId
-    WHERE t1.userId = ${req.decoded.id}
-    GROUP BY t1.id
-  `, { type: db.QueryTypes.SELECT });
-  res.json({ campaigns });
+// Responds with a summary view of all campaigns executed by the logged-in user
+// Fails with 500 response if
+//   database error
+router.get('/', async (req, res, next) => {
+  try {
+    const campaigns = await db.query(`
+      SELECT t1.id, name, subject, body, t1.createdAt
+              COUNT(*) n_leads,
+              COUNT(deliveredAt IS NOT NULL) n_delivered,
+              COUNT(openedAt IS NOT NULL) n_opened
+      FROM khonvo_test.campaigns t1
+      INNER JOIN khonvo_test.campaignleads t2 ON t1.id = t2.campaignId
+      WHERE t1.userId = ${req.decoded.id}
+      GROUP BY t1.id
+    `, { type: db.QueryTypes.SELECT });
+    return res.json({ campaigns });
+  } catch (e) {
+    res.status(500).error({ error: 'SERVER_ERROR' });
+    return next(e);
+  }
 });
 
 // Get the leads who were sent emails for the specified campaign
