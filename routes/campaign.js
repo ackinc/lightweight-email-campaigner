@@ -14,6 +14,10 @@ router.post('/', retrieveUser, async (req, res, next) => {
     name, subject, body, leads,
   } = req.body;
 
+  if (!name || !subject || !body || !leads.length) {
+    return res.status(400).json({ error: 'REQUIRED_INPUT_MISSING' });
+  }
+
   let campaign;
   try {
     campaign = await db.models.Campaign.create({
@@ -34,3 +38,5 @@ router.post('/', retrieveUser, async (req, res, next) => {
 
   return undefined;
 });
+
+module.exports = router;
