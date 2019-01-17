@@ -19,12 +19,9 @@ module.exports = (sequelize, DataTypes) => {
           key: 'id',
         },
       },
-      delivered: {
-        type: DataTypes.BOOLEAN,
-        default: false,
-      },
-      sendgridMailId: DataTypes.STRING,
-      openAt: DataTypes.DATE,
+      tracker: DataTypes.STRING,
+      deliveredAt: DataTypes.DATE,
+      openedAt: DataTypes.DATE,
     },
     {
       timestamps: true,
