@@ -12,7 +12,7 @@ const nodemailer = require('nodemailer');
 //   }
 function sendMails(sender, mailsToSend, cb) {
   const transport = nodemailer.createTransport({
-    service: "gmail",
+    service: 'gmail',
     auth: {
       type: 'OAuth2',
       user: sender.email,
@@ -20,7 +20,7 @@ function sendMails(sender, mailsToSend, cb) {
       clientSecret: process.env.CLIENT_SECRET,
       refreshToken: sender.refreshToken,
       accessToken: sender.accessToken,
-    }
+    },
   });
 
   const success = []; // Leads to which mail delivery succeeded
@@ -32,15 +32,15 @@ function sendMails(sender, mailsToSend, cb) {
       from: sender.email,
       to: lead.email,
       subject,
-      html: body
+      html: body,
     };
-    transport.sendMail(mailOpts, err => {
+    transport.sendMail(mailOpts, (err) => {
       if (err) failure.push(lead);
       else success.push(lead);
       complete();
     });
   });
-};
+}
 
 module.exports = {
   sendMails,

@@ -1,4 +1,4 @@
-const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+const CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const CHARS_LENGTH = CHARS.length;
 
 function randIntBetween(lo, hi) {
@@ -6,8 +6,8 @@ function randIntBetween(lo, hi) {
 }
 
 function getRandomString(len) {
-  let ret = new Array(len);
-  for (let i = 0; i < len; i++) ret[i] = CHARS[randIntBetween(0, CHARS_LENGTH)];
+  const ret = new Array(len);
+  for (let i = 0; i < len; i += 1) ret[i] = CHARS[randIntBetween(0, CHARS_LENGTH)];
   return ret.join('');
 }
 

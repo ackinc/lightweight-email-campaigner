@@ -14,5 +14,7 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.use('/auth', authRouter);
 app.use('/tracker', trackerRouter);
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}!`))
+const { PORT } = process.env;
+
+// eslint-disable-next-line no-console
+app.listen(PORT, () => console.log(`Server running on port ${PORT}!`));

@@ -4,8 +4,8 @@ const db = require('../db');
 //   him/her available at req.user
 async function retrieveUser(req, res, next) {
   if (!req.decoded) {
-    console.error('retrieveUser was called without ensureAuthenticated check');
-    return res.status(500).json({ error: 'SERVER_ERROR' });
+    res.status(500).json({ error: 'SERVER_ERROR' });
+    throw new Error('retrieveUser was called without ensureAuthenticated check');
   }
 
   try {
@@ -14,6 +14,8 @@ async function retrieveUser(req, res, next) {
   } catch (e) {
     res.status(500).json({ error: 'SERVER_ERROR' });
   }
+
+  return undefined;
 }
 
 module.exports = retrieveUser;

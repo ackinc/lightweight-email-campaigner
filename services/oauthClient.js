@@ -13,8 +13,8 @@ async function exchangeAuthCodeForTokens(code) {
   };
 }
 
-async function getUserDetailsFromIdToken(id_token) {
-  const ticket = await client.verifyIdToken({ idToken: id_token, audience: CLIENT_ID });
+async function getUserDetailsFromIdToken(idToken) {
+  const ticket = await client.verifyIdToken({ idToken, audience: CLIENT_ID });
   const payload = await ticket.getPayload();
 
   return {

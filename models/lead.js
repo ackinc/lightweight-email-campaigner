@@ -1,4 +1,5 @@
-module.exports = (sequelize, DataTypes) => sequelize.define('lead',
+module.exports = (sequelize, DataTypes) => sequelize.define(
+  'lead',
   {
     email: {
       type: DataTypes.STRING(50),

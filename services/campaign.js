@@ -1,15 +1,20 @@
-const urljoin = require('urljoin');
+const urljoin = require('url-join');
 
 const db = require('../db');
 const { sendMails } = require('./mail');
-const { getRandomString } = require('../util');
+const { getRandomString } = require('../utils');
+
+function injectTracker(mailBody, tracker) {
+  const trackerEndpoint = urljoin(process.env.BACKEND_URL, `/tracker/${tracker}`);
+  return `${mailBody}<img src="${trackerEndpoint}" />`;
+}
 
 function executeCampaign(user, campaign, leads) {
   const { subject, body } = campaign;
   const trackers = {};
 
   // see type definition of mailsToSend in services/mail.js
-  const mailsToSend = leads.map(lead => {
+  const mailsToSend = leads.map((lead) => {
     const tracker = getRandomString(20);
     trackers[lead.id] = tracker;
     return ({
@@ -36,11 +41,6 @@ function executeCampaign(user, campaign, leads) {
       tracker: trackers[lead.id],
     })));
   });
-}
-
-function injectTracker(mailBody, tracker) {
-  const trackerEndpoint = urljoin(process.env.BACKEND_URL, `/tracker/${tracker}`);
-  return mailBody += `<img src="${trackerEndpoint}" />`;
 }
 
 module.exports = { executeCampaign };

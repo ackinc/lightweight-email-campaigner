@@ -2,7 +2,8 @@ module.exports = (sequelize, DataTypes) => {
   const Campaign = sequelize.import('./campaign');
   const Lead = sequelize.import('./lead');
 
-  return sequelize.define('campaignlead',
+  return sequelize.define(
+    'campaignlead',
     {
       campaign_id: {
         type: DataTypes.INTEGER,

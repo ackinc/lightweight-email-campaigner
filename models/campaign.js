@@ -1,7 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.import('./user');
 
-  return sequelize.define('campaign',
+  return sequelize.define(
+    'campaign',
     {
       name: DataTypes.STRING,
       subject: DataTypes.STRING,
@@ -13,8 +14,7 @@ module.exports = (sequelize, DataTypes) => {
           key: 'id',
         },
       },
-    },
-    {
+    }, {
       timestamps: true,
     },
   );

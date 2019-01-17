@@ -11,17 +11,19 @@ router.post('/', async (req, res, next) => {
   const { authCode } = req.body;
 
   try {
-    const { accessToken, refreshToken, idToken } =
-      await oauthClientService.exchangeAuthCodeForTokens(authCode);
+    const {
+      accessToken, refreshToken, idToken,
+    } = await oauthClientService.exchangeAuthCodeForTokens(authCode);
 
     // Create the user if not already in DB
-    const { firstname, lastname, email } =
-      await oauthClientService.getUserDetailsFromIdToken(idToken);
+    const {
+      firstname, lastname, email,
+    } = await oauthClientService.getUserDetailsFromIdToken(idToken);
 
     const [user] = await db.models.User
       .findOrCreate({ where: { email }, defaults: { firstname, lastname } });
 
-    const token = await tokenService.generate({ id: user.id, email })
+    const token = await tokenService.generate({ id: user.id, email });
     res.json({ token });
 
     // if this user has already authorized our app,
