@@ -1,6 +1,30 @@
-const { CampaignLead } = require('../common/db').models;
+const Isemail = require('isemail');
+
+const { Campaign, CampaignLead, Lead } = require('../common/db').models;
 const { sendPersonalizedMails } = require('./mail');
 const { getRandomString } = require('../common/utils');
+
+// inserts campaign and any new leads into DB, then
+// returns Campaign and list of Leads
+async function recordCampaignRequest(userId, { name, subject, body }, recipientEmails) {
+  const campaign = await Campaign.create({
+    name, subject, body, userId,
+  });
+
+  // insert rows for leads not already in DB
+  // we could continue executing the campaign if this query failed,
+  //   leads that were not already in the DB would not be sent the email
+  // but it is probably better to let the user re-try the campaign again
+  await Lead.bulkCreate(
+    recipientEmails.filter(email => Isemail.validate(email)).map(email => ({ email })),
+    { ignoreDuplicates: true },
+  );
+
+  // we need the full lead objects to be able to insert campaign-lead links later
+  const leads = await Lead.findAll({ where: { email: recipientEmails } });
+
+  return { campaign, leads };
+}
 
 // Adds trackers for each mail, inserts appropriate campaign-lead links in DB
 //   and sends the emails
@@ -25,4 +49,4 @@ async function executeCampaign(userEmail, campaign, leads) {
   );
 }
 
-module.exports = { executeCampaign };
+module.exports = { recordCampaignRequest, executeCampaign };

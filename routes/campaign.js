@@ -1,9 +1,8 @@
 const express = require('express');
-const Isemail = require('isemail');
 
 const db = require('../common/db');
 const ensureAuthenticated = require('../middleware/ensureAuthenticated');
-const { executeCampaign } = require('../services/campaign');
+const { recordCampaignRequest, executeCampaign } = require('../services/campaign');
 
 const router = express.Router();
 router.use(ensureAuthenticated);
@@ -79,37 +78,29 @@ router.get('/:campaign_id/leads', async (req, res, next) => {
 //     database error
 //     sendgrid error
 router.post('/', async (req, res, next) => {
+  // verify we have all required inputs
   const {
-    name, subject, body, leads,
+    name,
+    subject,
+    body,
+    leads: recipients,
   } = req.body;
-  if (!name || !subject || !body || !Array.isArray(leads) || leads.length === 0) {
+  if (
+    !name
+    || !subject
+    || !body
+    || !Array.isArray(recipients)
+    || recipients.length === 0
+  ) {
     return res.status(400).json({ error: 'BAD_INPUTS' });
   }
 
   const { id: userId, email: userEmail } = req.decoded;
-  if (!userId || !userEmail) {
-    return next(new Error('req.decoded missing in create-campaign route'));
-  }
+  const campaignDetails = { name, subject, body };
 
   try {
-    const campaign = await db.models.Campaign.create({
-      name, subject, body, userId,
-    });
-
-    // insert rows for leads not already in DB
-    // we could continue executing the campaign if this query failed,
-    //   leads that were not already in the DB would not be sent the email
-    // but it is probably better to let the user re-try the campaign later
-    await db.models.Lead.bulkCreate(
-      leads.filter(email => Isemail.validate(email)).map(email => ({ email })),
-      { ignoreDuplicates: true },
-    );
-
-    // we need the full lead objects to be able to insert campaign-lead links later
-    const allLeads = await db.models.Lead.findAll({ where: { email: leads } });
-
-    await executeCampaign(userEmail, campaign, allLeads);
-
+    const { campaign, leads } = await recordCampaignRequest(userId, campaignDetails, recipients);
+    await executeCampaign(userEmail, campaign, leads);
     return res.json();
   } catch (e) {
     return next(e);
