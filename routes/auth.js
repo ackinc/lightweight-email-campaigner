@@ -1,14 +1,14 @@
 const express = require('express');
 
 const { User } = require('../common/db').models;
-const tokenService = require('../services/jwt');
+const jwtService = require('../services/jwt');
 const oauthClientService = require('../services/oauthClient');
 
 const router = express.Router();
 
 // This route is hit when a user signs-in with Google in the front-end
 // Input
-//   req.body.idToken - the idToken received from signing-in with Google in the front-end
+//   req.body.authCode - the authorization code received on signing-in with Google
 // We add the user to the DB if not already present, and send a JWT in the response
 // Fails with
 //   400 response if
@@ -17,16 +17,23 @@ const router = express.Router();
 //     database error
 //     error generating JWT
 router.post('/', async (req, res, next) => {
-  const { idToken } = req.body;
+  const { authCode } = req.body;
 
   try {
+    const { refreshToken, idToken } = await oauthClientService.exchangeAuthCodeForTokens(authCode);
+
     const {
       firstname, lastname, email,
     } = await oauthClientService.getUserDetailsFromIdToken(idToken);
 
     const [user] = await User.findOrCreate({ where: { email }, defaults: { firstname, lastname } });
 
-    const token = await tokenService.generate({ id: user.id, email });
+    if (refreshToken) {
+      user.refreshToken = refreshToken;
+      await user.save();
+    }
+
+    const token = await jwtService.generate({ id: user.id, email });
 
     return res.json({ token });
   } catch (e) {
