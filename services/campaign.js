@@ -1,8 +1,27 @@
 const Isemail = require('isemail');
+const Joi = require('joi');
 
 const { Campaign, CampaignLead, Lead } = require('../common/db').models;
 const { sendPersonalizedMails } = require('./mail');
 const { getRandomString } = require('../common/utils');
+
+const validNewCampaignInput = Joi.object().keys({
+  name: Joi.string().min(1).required()
+    .error(new Error('Campaign name must be a non-empty string')),
+
+  subject: Joi.string().min(1).required()
+    .error(new Error('Campaign subject must be a non-empty string')),
+
+  body: Joi.string().min(1).required()
+    .error(new Error('Campaign body must be a non-empty string')),
+
+  leads: Joi.array().min(1).required()
+    .error(new Error('A campaign must have at least one recipient')),
+});
+
+function validateNewCampaignInput(data) {
+  return Joi.validate(data, validNewCampaignInput);
+}
 
 // inserts campaign and any new leads into DB, then
 // returns Campaign and list of Leads
@@ -49,4 +68,4 @@ async function executeCampaign(userEmail, campaign, leads) {
   );
 }
 
-module.exports = { recordCampaignRequest, executeCampaign };
+module.exports = { validateNewCampaignInput, recordCampaignRequest, executeCampaign };

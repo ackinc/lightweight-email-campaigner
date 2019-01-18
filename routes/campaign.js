@@ -2,7 +2,11 @@ const express = require('express');
 
 const db = require('../common/db');
 const ensureAuthenticated = require('../middleware/ensureAuthenticated');
-const { recordCampaignRequest, executeCampaign } = require('../services/campaign');
+const {
+  validateNewCampaignInput,
+  recordCampaignRequest,
+  executeCampaign,
+} = require('../services/campaign');
 
 const router = express.Router();
 router.use(ensureAuthenticated);
@@ -77,26 +81,15 @@ router.get('/:campaign_id/leads', async (req, res, next) => {
 //   500
 //     database error
 //     sendgrid error
-router.post('/', async (req, res, next) => {
-  // verify we have all required inputs
-  const {
-    name,
-    subject,
-    body,
-    leads: recipients,
-  } = req.body;
-  if (
-    !name
-    || !subject
-    || !body
-    || !Array.isArray(recipients)
-    || recipients.length === 0
-  ) {
-    return res.status(400).json({ error: 'BAD_INPUTS' });
-  }
+router.post('/', (req, res, next) => {
+  const { error } = validateNewCampaignInput(req.body);
 
+  if (error) res.status(400).json({ error: error.message });
+  else next();
+}, async (req, res, next) => {
   const { id: userId, email: userEmail } = req.decoded;
-  const campaignDetails = { name, subject, body };
+  const campaignDetails = req.body;
+  const recipients = req.body.leads;
 
   try {
     const { campaign, leads } = await recordCampaignRequest(userId, campaignDetails, recipients);
