@@ -19,8 +19,8 @@ router.get('/', async (req, res, next) => {
     const campaigns = await db.query(`
       SELECT t1.id, name, subject, body, t1.createdAt,
               COUNT(*) n_leads,
-              COUNT(deliveredAt IS NOT NULL) n_delivered,
-              COUNT(openedAt IS NOT NULL) n_opened
+              COUNT(deliveredAt) n_delivered,
+              COUNT(openedAt) n_opened
       FROM khonvo_test.campaigns t1
       INNER JOIN khonvo_test.campaignleads t2 ON t1.id = t2.campaignId
       WHERE t1.userId = ${req.decoded.id}
