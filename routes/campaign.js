@@ -1,4 +1,5 @@
 const express = require('express');
+const Isemail = require('isemail');
 
 const db = require('../common/db');
 const ensureAuthenticated = require('../middleware/ensureAuthenticated');
@@ -100,7 +101,7 @@ router.post('/', async (req, res, next) => {
     //   leads that were not already in the DB would not be sent the email
     // but it is probably better to let the user re-try the campaign later
     await db.models.Lead.bulkCreate(
-      leads.map(l => ({ email: l })),
+      leads.filter(email => Isemail.validate(email)).map(email => ({ email })),
       { ignoreDuplicates: true },
     );
 
