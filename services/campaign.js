@@ -1,3 +1,5 @@
+/* This module contains helpers for creating a new campaign */
+
 const Isemail = require('isemail');
 const Joi = require('joi');
 
