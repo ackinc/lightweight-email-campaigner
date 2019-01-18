@@ -1,3 +1,5 @@
+/* This module abstracts dealing with Google OAuth */
+
 const { OAuth2Client } = require('google-auth-library');
 
 const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = process.env;
