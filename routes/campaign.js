@@ -93,6 +93,7 @@ router.post('/', (req, res, next) => {
 
   try {
     const { campaign, leads } = await recordCampaignRequest(userId, campaignDetails, recipients);
+    if (leads.length === 0) return res.status(400).json({ error: 'NO_LEADS_VALID' });
     await executeCampaign(userEmail, campaign, leads);
     return res.json();
   } catch (e) {
