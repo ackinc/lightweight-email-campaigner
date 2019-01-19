@@ -8,7 +8,8 @@ const router = express.Router();
 
 // This route is hit when a user signs-in with Google in the front-end
 // Input
-//   req.body.authCode - the authorization code received on signing-in with Google
+//   [INACTIVE] req.body.authCode - the authorization code received on signing-in with Google
+//   req.body.idToken - the id token received on signing-in with Google
 // We add the user to the DB if not already present, and send a JWT in the response
 // Fails with
 //   400 response if
@@ -17,10 +18,13 @@ const router = express.Router();
 //     database error
 //     error generating JWT
 router.post('/', async (req, res, next) => {
-  const { authCode } = req.body;
+  const { idToken } = req.body;
 
   try {
-    const { refreshToken, idToken } = await oauthClientService.exchangeAuthCodeForTokens(authCode);
+    // INACTIVE
+    // const {
+    //   refreshToken, idToken,
+    // } = await oauthClientService.exchangeAuthCodeForTokens(authCode);
 
     const {
       firstname, lastname, email,
@@ -28,10 +32,11 @@ router.post('/', async (req, res, next) => {
 
     const [user] = await User.findOrCreate({ where: { email }, defaults: { firstname, lastname } });
 
-    if (refreshToken) {
-      user.refreshToken = refreshToken;
-      await user.save();
-    }
+    // INACTIVE
+    // if (refreshToken) {
+    //   user.refreshToken = refreshToken;
+    //   await user.save();
+    // }
 
     const token = await jwtService.generate({ id: user.id, email });
 
