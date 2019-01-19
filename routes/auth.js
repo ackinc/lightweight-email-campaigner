@@ -43,7 +43,7 @@ router.post('/', async (req, res, next) => {
     return res.json({ token });
   } catch (e) {
     if (/token/i.test(e.message)) { // error due to bad ID Token
-      return res.status(400).json({ error: 'TOKEN_INVALID' });
+      res.status(400).json({ error: 'TOKEN_INVALID' });
     }
 
     return next(e);
