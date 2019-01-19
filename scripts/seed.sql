@@ -3,11 +3,12 @@ DROP TABLE `leads`;
 DROP TABLE `campaigns`;
 DROP TABLE `users`;
 
-CREATE TABLE `users` (
+users, CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
+  `refreshToken` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
