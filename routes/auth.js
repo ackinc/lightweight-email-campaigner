@@ -12,9 +12,9 @@ const router = express.Router();
 //   req.body.idToken - the id token received on signing-in with Google
 // We add the user to the DB if not already present, and send a JWT in the response
 // Fails with
-//   400 response if
-//     supplied ID Token is invalid
 //   500 response if
+//     supplied ID Token (or auth code) is invalid
+//       TODO: should be a 400 response; figure out how to catch the right error
 //     database error
 //     error generating JWT
 router.post('/', async (req, res, next) => {
@@ -42,10 +42,6 @@ router.post('/', async (req, res, next) => {
 
     return res.json({ token });
   } catch (e) {
-    if (/token/i.test(e.message)) { // error due to bad ID Token
-      res.status(400).json({ error: 'TOKEN_INVALID' });
-    }
-
     return next(e);
   }
 });
