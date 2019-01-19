@@ -21,8 +21,8 @@ router.get('/', async (req, res, next) => {
               COUNT(*) n_leads,
               COUNT(deliveredAt) n_delivered,
               COUNT(openedAt) n_opened
-      FROM khonvo_test.campaigns t1
-      INNER JOIN khonvo_test.campaignleads t2 ON t1.id = t2.campaignId
+      FROM campaigns t1
+      INNER JOIN campaignleads t2 ON t1.id = t2.campaignId
       WHERE t1.userId = ${req.decoded.id}
       GROUP BY t1.id
     `, { type: db.QueryTypes.SELECT });
