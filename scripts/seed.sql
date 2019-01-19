@@ -1,9 +1,9 @@
-DROP TABLE `campaignleads`;
-DROP TABLE `leads`;
-DROP TABLE `campaigns`;
-DROP TABLE `users`;
+DROP TABLE IF EXISTS `campaignleads`;
+DROP TABLE IF EXISTS `leads`;
+DROP TABLE IF EXISTS `campaigns`;
+DROP TABLE IF EXISTS `users`;
 
-users, CREATE TABLE `users` (
+CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
