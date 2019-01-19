@@ -7,7 +7,8 @@ sequelize.authenticate()
   .then(() => console.log('Connected to database')) // eslint-disable-line no-console
   .catch((err) => {
     console.error('Failed to connect to database'); // eslint-disable-line no-console
-    throw err;
+    console.error(err); // eslint-disable-line no-console
+    process.exit(1);
   });
 
 const modelsDir = path.join(__dirname, '../models');
