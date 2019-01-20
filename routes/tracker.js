@@ -19,9 +19,11 @@ router.post('/', (req, res) => {
     const fieldToUpdate = event === 'delivered' ? 'deliveredAt' : 'openedAt';
     const eventTime = tz(timestamp * 1000).utc().format('YYYY-MM-DD HH:mm:ss');
 
-    db.query(`UPDATE campaignleads
-              SET ${fieldToUpdate}='${eventTime}', updatedAt=UTC_TIMESTAMP()
-              WHERE tracker='${tracker}' AND ${fieldToUpdate} IS NULL`);
+    db.query(`
+      UPDATE campaignleads
+      SET ${fieldToUpdate} =:eventTime, updatedAt=UTC_TIMESTAMP()
+      WHERE tracker=:tracker AND ${fieldToUpdate} IS NULL
+    `, { replacements: { eventTime, tracker } });
   });
 });
 

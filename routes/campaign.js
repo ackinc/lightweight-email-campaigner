@@ -23,9 +23,9 @@ router.get('/', async (req, res, next) => {
               COUNT(openedAt) n_opened
       FROM campaigns t1
       INNER JOIN campaignleads t2 ON t1.id = t2.campaignId
-      WHERE t1.userId = ${req.decoded.id}
+      WHERE t1.userId = ?
       GROUP BY t1.id
-    `, { type: db.QueryTypes.SELECT });
+    `, { replacements: [req.decoded.id], type: db.QueryTypes.SELECT });
     return res.json({ campaigns });
   } catch (e) {
     return next(e);
@@ -49,8 +49,8 @@ router.get('/:campaign_id/leads', async (req, res, next) => {
       FROM campaigns t1
       INNER JOIN campaignleads t2 ON t2.campaignId = t1.id
       INNER JOIN leads t3 ON t2.leadId = t3.id
-      WHERE t1.id = ${req.params.campaign_id}
-    `, { type: db.QueryTypes.SELECT });
+      WHERE t1.id = ?
+    `, { replacements: [req.params.campaign_id], type: db.QueryTypes.SELECT });
 
     if (leads.length === 0) {
       return res.status(404).json({ error: 'NOT_FOUND' });
