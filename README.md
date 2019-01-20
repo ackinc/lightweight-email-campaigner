@@ -31,6 +31,4 @@
   - Protection against SQL injection
   - Made the user sign-in endpoint more REST-ful (POST /auth -> POST /users)
   - Better html page title
-
-- Known issues
-  - Multi-line email body doesn't work right
+  - Fixed issue with multiline email bodies
