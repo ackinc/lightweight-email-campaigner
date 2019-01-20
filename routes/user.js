@@ -38,7 +38,9 @@ router.post('/', async (req, res, next) => {
     //   await user.save();
     // }
 
-    const token = await jwtService.generate({ id: user.id, email });
+    const token = await jwtService.generate({
+      id: user.id, firstname, lastname, email, role: user.role,
+    });
 
     return res.json({ token });
   } catch (e) {

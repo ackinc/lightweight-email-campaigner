@@ -31,4 +31,5 @@
   - Protection against SQL injection
   - Made the user sign-in endpoint more REST-ful (POST /auth -> POST /users)
   - Better html page title
+  - Added role-based authorization for campaign creation
   - Fixed issue with multiline email bodies
