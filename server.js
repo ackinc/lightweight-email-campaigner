@@ -5,7 +5,7 @@ const cors = require('cors');
 const express = require('express');
 const path = require('path');
 
-const authRouter = require('./routes/auth');
+const userRouter = require('./routes/user');
 const campaignRouter = require('./routes/campaign');
 const trackerRouter = require('./routes/tracker');
 const errorHandler = require('./middleware/errorHandler');
@@ -16,7 +16,7 @@ app.use(cors());
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, './views/index.html')));
 
-app.use('/auth', authRouter);
+app.use('/users', userRouter);
 app.use('/campaigns', campaignRouter);
 app.use('/tracker', trackerRouter);
 
