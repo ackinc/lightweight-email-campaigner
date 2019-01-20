@@ -26,3 +26,8 @@
   - Security
     - Only enable CORS for authorized frontends
     - XSS protection (not an issue until admin role to be implemented)
+
+- Changes made after submission (see commit with git tag: submission)
+  - Protection against SQL injection
+  - Made the user sign-in endpoint more REST-ful (POST /auth -> POST /users)
+  - Better html page title
