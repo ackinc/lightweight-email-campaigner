@@ -1,6 +1,9 @@
 # Khonvo Hiring Challenge
 
+This repo (and it's companion - [lightweight-email-campaigner-frontend](https://github.com/ackinc/lightweight-email-campaigner-frontend) were created in 3 days for the Khonvo Hiring Challenge
+
 [Problem statement](https://docs.google.com/document/d/1y4EiJWGMrg7ArXrEyvXppjl4JfCUfB3dHi8exHxYJB0/edit)
+
 [Heroku deployment](https://khonvo-challenge-backend.herokuapp.com/)
 
 ##### Notes/Rationale
