@@ -1,11 +1,11 @@
 const path = require('path');
 const Sequelize = require('sequelize');
 
-const { DB_URL } = process.env;
-const sequelize = new Sequelize(DB_URL);
+const { DATABASE_URL } = process.env;
+const sequelize = new Sequelize(DATABASE_URL);
 
 sequelize.authenticate()
-  .then(() => console.log(`Connected to database ${DB_URL}`)) // eslint-disable-line no-console
+  .then(() => console.log(`Connected to database ${DATABASE_URL}`)) // eslint-disable-line no-console
   .catch((err) => {
     console.error('Failed to connect to database'); // eslint-disable-line no-console
     console.error(err); // eslint-disable-line no-console
