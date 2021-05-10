@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const express = require("express");
 const path = require("path");
@@ -11,8 +10,12 @@ const trackerRouter = require("./routes/tracker");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
-app.use(bodyParser.json());
-app.use(cors());
+app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS.split(","),
+  })
+);
 
 app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "./views/index.html"))
