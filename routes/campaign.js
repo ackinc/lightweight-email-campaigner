@@ -17,13 +17,13 @@ router.use(ensureAuthenticated);
 router.get('/', async (req, res, next) => {
   try {
     const campaigns = await db.query(`
-      SELECT t1.id, name, subject, body, t1.createdAt,
+      SELECT t1.id, name, subject, body, t1."createdAt",
               COUNT(*) n_leads,
-              COUNT(deliveredAt) n_delivered,
-              COUNT(openedAt) n_opened
+              COUNT("deliveredAt") n_delivered,
+              COUNT("openedAt") n_opened
       FROM campaigns t1
-      INNER JOIN campaignleads t2 ON t1.id = t2.campaignId
-      WHERE t1.userId = ?
+      INNER JOIN campaignleads t2 ON t1.id = t2."campaignId"
+      WHERE t1."userId" = ?
       GROUP BY t1.id
     `, { replacements: [req.decoded.id], type: db.QueryTypes.SELECT });
     return res.json({ campaigns });
@@ -45,10 +45,10 @@ router.get('/', async (req, res, next) => {
 router.get('/:campaign_id/leads', async (req, res, next) => {
   try {
     const leads = await db.query(`
-      SELECT t1.userId userId, t3.id leadId, email, deliveredAt, openedAt
+      SELECT t1."userId" "userId", t3.id "leadId", email, "deliveredAt", "openedAt"
       FROM campaigns t1
-      INNER JOIN campaignleads t2 ON t2.campaignId = t1.id
-      INNER JOIN leads t3 ON t2.leadId = t3.id
+      INNER JOIN campaignleads t2 ON t2."campaignId" = t1.id
+      INNER JOIN leads t3 ON t2."leadId" = t3.id
       WHERE t1.id = ?
     `, { replacements: [req.params.campaign_id], type: db.QueryTypes.SELECT });
 
@@ -82,7 +82,7 @@ router.get('/:campaign_id/leads', async (req, res, next) => {
 //     database error
 //     sendgrid error
 router.post('/', (req, res, next) => {
-  if (req.decoded.role !== 'marketer') return res.status(403).json({ error: 'NOT_AUTHORIZED' });
+  if (req.decoded.role !== 'authorized_user') return res.status(403).json({ error: 'NOT_AUTHORIZED' });
 
   const { error } = validateNewCampaignInput(req.body);
   if (error) return res.status(400).json({ error: error.message });

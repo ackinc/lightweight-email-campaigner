@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => sequelize.define(
     },
     refreshToken: DataTypes.STRING,
     role: {
-      type: DataTypes.ENUM('user', 'marketer'),
+      type: DataTypes.ENUM('user', 'authorized_user'),
       defaultValue: 'user',
     },
   },
