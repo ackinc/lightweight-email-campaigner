@@ -15,14 +15,15 @@ router.post('/', (req, res) => {
   const allowedEvents = ['delivered', 'open'];
   events.forEach(({ event, tracker, timestamp }) => {
     if (!allowedEvents.includes(event)) return;
+    if (!tracker) return;
 
     const fieldToUpdate = event === 'delivered' ? 'deliveredAt' : 'openedAt';
     const eventTime = tz(timestamp * 1000).utc().format('YYYY-MM-DD HH:mm:ss');
 
     db.query(`
       UPDATE campaignleads
-      SET ${fieldToUpdate} =:eventTime, updatedAt=UTC_TIMESTAMP()
-      WHERE tracker=:tracker AND ${fieldToUpdate} IS NULL
+      SET "${fieldToUpdate}" =:eventTime, "updatedAt"=now()
+      WHERE tracker=:tracker AND "${fieldToUpdate}" IS NULL
     `, { replacements: { eventTime, tracker } });
   });
 });
