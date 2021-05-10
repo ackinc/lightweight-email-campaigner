@@ -1,22 +1,22 @@
 module.exports = (sequelize, DataTypes) => {
-  const Campaign = sequelize.import('./campaign');
-  const Lead = sequelize.import('./lead');
+  const Campaign = sequelize.import("./campaign");
+  const Lead = sequelize.import("./lead");
 
   return sequelize.define(
-    'campaignlead',
+    "campaignlead",
     {
       campaignId: {
         type: DataTypes.INTEGER,
         references: {
           model: Campaign,
-          key: 'id',
+          key: "id",
         },
       },
       leadId: {
         type: DataTypes.INTEGER,
         references: {
           model: Lead,
-          key: 'id',
+          key: "id",
         },
       },
       tracker: DataTypes.STRING,
@@ -25,6 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       timestamps: true,
-    },
+    }
   );
 };

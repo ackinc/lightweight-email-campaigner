@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.import('./user');
+  const User = sequelize.import("./user");
 
   return sequelize.define(
-    'campaign',
+    "campaign",
     {
       name: DataTypes.STRING,
       subject: DataTypes.STRING,
@@ -11,11 +11,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         references: {
           model: User,
-          key: 'id',
+          key: "id",
         },
       },
-    }, {
-      timestamps: true,
     },
+    {
+      timestamps: true,
+    }
   );
 };

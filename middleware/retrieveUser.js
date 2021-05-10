@@ -1,4 +1,4 @@
-const { User } = require('../common/db').models;
+const { User } = require("../common/db").models;
 
 // Retrieves the current logged-in user from DB and makes
 //   it available at req.user
@@ -11,7 +11,9 @@ const { User } = require('../common/db').models;
 //   database error
 async function retrieveUser(req, res, next) {
   if (!req.decoded) {
-    return next(new Error('retrieveUser was called without ensureAuthenticated check'));
+    return next(
+      new Error("retrieveUser was called without ensureAuthenticated check")
+    );
   }
 
   try {

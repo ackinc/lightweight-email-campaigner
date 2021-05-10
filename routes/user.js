@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 
-const { User } = require('../common/db').models;
-const jwtService = require('../services/jwt');
-const oauthClientService = require('../services/oauthClient');
+const { User } = require("../common/db").models;
+const jwtService = require("../services/jwt");
+const oauthClientService = require("../services/oauthClient");
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ const router = express.Router();
 //       TODO: should be a 400 response; figure out how to catch the right error
 //     database error
 //     error generating JWT
-router.post('/', async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   const { idToken } = req.body;
 
   try {
@@ -26,11 +26,13 @@ router.post('/', async (req, res, next) => {
     //   refreshToken, idToken,
     // } = await oauthClientService.exchangeAuthCodeForTokens(authCode);
 
-    const {
-      firstname, lastname, email,
-    } = await oauthClientService.getUserDetailsFromIdToken(idToken);
+    const { firstname, lastname, email } =
+      await oauthClientService.getUserDetailsFromIdToken(idToken);
 
-    const [user] = await User.findOrCreate({ where: { email }, defaults: { firstname, lastname } });
+    const [user] = await User.findOrCreate({
+      where: { email },
+      defaults: { firstname, lastname },
+    });
 
     // INACTIVE
     // if (refreshToken) {
@@ -39,7 +41,11 @@ router.post('/', async (req, res, next) => {
     // }
 
     const token = await jwtService.generate({
-      id: user.id, firstname, lastname, email, role: user.role,
+      id: user.id,
+      firstname,
+      lastname,
+      email,
+      role: user.role,
     });
 
     return res.json({ token });

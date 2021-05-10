@@ -1,4 +1,4 @@
-const tokenService = require('../services/jwt');
+const tokenService = require("../services/jwt");
 
 // Ensures token sent in request is valid, decodes it, and attaches
 //   it to the request object at req.decoded
@@ -7,16 +7,15 @@ const tokenService = require('../services/jwt');
 //   token expired
 //   token invalid
 async function ensureAuthenticated(req, res, next) {
-  req.token = req.header('authorization')
-    || req.query.token
-    || req.body.token;
+  req.token = req.header("authorization") || req.query.token || req.body.token;
 
-  if (!req.token) return res.status(401).json({ error: 'TOKEN_MISSING' });
+  if (!req.token) return res.status(401).json({ error: "TOKEN_MISSING" });
 
   try {
     req.decoded = await tokenService.decode(req.token);
   } catch (e) {
-    const error = e.name === 'TokenExpiredError' ? 'TOKEN_EXPIRED' : 'TOKEN_INVALID';
+    const error =
+      e.name === "TokenExpiredError" ? "TOKEN_EXPIRED" : "TOKEN_INVALID";
     return res.status(401).json({ error });
   }
 

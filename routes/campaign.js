@@ -1,12 +1,12 @@
-const express = require('express');
+const express = require("express");
 
-const db = require('../common/db');
-const ensureAuthenticated = require('../middleware/ensureAuthenticated');
+const db = require("../common/db");
+const ensureAuthenticated = require("../middleware/ensureAuthenticated");
 const {
   validateNewCampaignInput,
   recordCampaignRequest,
   executeCampaign,
-} = require('../services/campaign');
+} = require("../services/campaign");
 
 const router = express.Router();
 router.use(ensureAuthenticated);
@@ -14,9 +14,10 @@ router.use(ensureAuthenticated);
 // Responds with a summary view of all campaigns executed by the logged-in user
 // Fails with 500 response if
 //   database error
-router.get('/', async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    const campaigns = await db.query(`
+    const campaigns = await db.query(
+      `
       SELECT t1.id, name, subject, body, t1."createdAt",
               COUNT(*) n_leads,
               COUNT("deliveredAt") n_delivered,
@@ -25,7 +26,9 @@ router.get('/', async (req, res, next) => {
       INNER JOIN campaignleads t2 ON t1.id = t2."campaignId"
       WHERE t1."userId" = ?
       GROUP BY t1.id
-    `, { replacements: [req.decoded.id], type: db.QueryTypes.SELECT });
+    `,
+      { replacements: [req.decoded.id], type: db.QueryTypes.SELECT }
+    );
     return res.json({ campaigns });
   } catch (e) {
     return next(e);
@@ -42,26 +45,29 @@ router.get('/', async (req, res, next) => {
 //     no campaign was found with supplied ID
 //   500 response if
 //     database error
-router.get('/:campaign_id/leads', async (req, res, next) => {
+router.get("/:campaign_id/leads", async (req, res, next) => {
   try {
-    const leads = await db.query(`
+    const leads = await db.query(
+      `
       SELECT t1."userId" "userId", t3.id "leadId", email, "deliveredAt", "openedAt"
       FROM campaigns t1
       INNER JOIN campaignleads t2 ON t2."campaignId" = t1.id
       INNER JOIN leads t3 ON t2."leadId" = t3.id
       WHERE t1.id = ?
-    `, { replacements: [req.params.campaign_id], type: db.QueryTypes.SELECT });
+    `,
+      { replacements: [req.params.campaign_id], type: db.QueryTypes.SELECT }
+    );
 
     if (leads.length === 0) {
-      return res.status(404).json({ error: 'NOT_FOUND' });
+      return res.status(404).json({ error: "NOT_FOUND" });
     }
 
     // check if current user is allowed access to this campaign
     if (leads[0].userId !== req.decoded.id) {
-      return res.status(403).json({ error: 'NOT_ALLOWED' });
+      return res.status(403).json({ error: "NOT_ALLOWED" });
     }
 
-    leads.forEach(l => delete l.userId); // eslint-disable-line no-param-reassign
+    leads.forEach((l) => delete l.userId); // eslint-disable-line no-param-reassign
 
     return res.json({ leads });
   } catch (e) {
@@ -81,26 +87,36 @@ router.get('/:campaign_id/leads', async (req, res, next) => {
 //   500
 //     database error
 //     sendgrid error
-router.post('/', (req, res, next) => {
-  if (req.decoded.role !== 'authorized_user') return res.status(403).json({ error: 'NOT_AUTHORIZED' });
+router.post(
+  "/",
+  (req, res, next) => {
+    if (req.decoded.role !== "authorized_user")
+      return res.status(403).json({ error: "NOT_AUTHORIZED" });
 
-  const { error } = validateNewCampaignInput(req.body);
-  if (error) return res.status(400).json({ error: error.message });
+    const { error } = validateNewCampaignInput(req.body);
+    if (error) return res.status(400).json({ error: error.message });
 
-  return next();
-}, async (req, res, next) => {
-  const { id: userId, email: userEmail } = req.decoded;
-  const campaignDetails = req.body;
-  const recipients = req.body.leads;
+    return next();
+  },
+  async (req, res, next) => {
+    const { id: userId, email: userEmail } = req.decoded;
+    const campaignDetails = req.body;
+    const recipients = req.body.leads;
 
-  try {
-    const { campaign, leads } = await recordCampaignRequest(userId, campaignDetails, recipients);
-    if (leads.length === 0) return res.status(400).json({ error: 'NO_LEADS_VALID' });
-    await executeCampaign(userEmail, campaign, leads);
-    return res.json();
-  } catch (e) {
-    return next(e);
+    try {
+      const { campaign, leads } = await recordCampaignRequest(
+        userId,
+        campaignDetails,
+        recipients
+      );
+      if (leads.length === 0)
+        return res.status(400).json({ error: "NO_LEADS_VALID" });
+      await executeCampaign(userEmail, campaign, leads);
+      return res.json();
+    } catch (e) {
+      return next(e);
+    }
   }
-});
+);
 
 module.exports = router;
