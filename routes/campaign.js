@@ -82,7 +82,7 @@ router.get('/:campaign_id/leads', async (req, res, next) => {
 //     database error
 //     sendgrid error
 router.post('/', (req, res, next) => {
-  if (req.decoded.role !== 'marketer') return res.status(403).json({ error: 'NOT_AUTHORIZED' });
+  if (req.decoded.role !== 'authorized_user') return res.status(403).json({ error: 'NOT_AUTHORIZED' });
 
   const { error } = validateNewCampaignInput(req.body);
   if (error) return res.status(400).json({ error: error.message });
