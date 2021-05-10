@@ -19,6 +19,7 @@
     "lodash": "^4.17.11",
     "moment-timezone": "^0.5.23",
     "mysql2": "^1.6.4",
+    "pg": "^8.6.0",
     "sequelize": "^4.42.0"
   },
   "scripts": {
