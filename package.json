@@ -1,6 +1,6 @@
 {
   "name": "lightweight-email-campaigner",
-  "description": "Send multi-stage email campaigns to a list of recipients",
+  "description": "Send single-stage email campaigns to a list of recipients",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
