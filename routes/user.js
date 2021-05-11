@@ -18,27 +18,23 @@ const router = express.Router();
 //     database error
 //     error generating JWT
 router.post("/", async (req, res, next) => {
-  const { idToken } = req.body;
+  const { idToken, accessToken, accessTokenScope, accessTokenExpiresAt } =
+    req.body;
 
   try {
-    // INACTIVE
-    // const {
-    //   refreshToken, idToken,
-    // } = await oauthClientService.exchangeAuthCodeForTokens(authCode);
-
     const { firstname, lastname, email } =
       await oauthClientService.getUserDetailsFromIdToken(idToken);
 
     const [user] = await User.findOrCreate({
       where: { email },
-      defaults: { firstname, lastname },
+      defaults: {
+        firstname,
+        lastname,
+        accessToken,
+        accessTokenScope,
+        accessTokenExpiresAt,
+      },
     });
-
-    // INACTIVE
-    // if (refreshToken) {
-    //   user.refreshToken = refreshToken;
-    //   await user.save();
-    // }
 
     const token = await jwtService.generate({
       id: user.id,
