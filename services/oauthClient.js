@@ -1,9 +1,9 @@
 /* This module abstracts dealing with Google OAuth */
 
-const { OAuth2Client } = require("google-auth-library");
+const { google } = require("googleapis");
 
 const { CLIENT_ID, CLIENT_SECRET } = process.env;
-const client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET);
+const client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET);
 
 async function exchangeAuthCodeForTokens(authCode) {
   const r = await client.getToken(authCode);
