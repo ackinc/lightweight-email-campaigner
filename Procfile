@@ -1,1 +1,1 @@
-release: yarn seed
+release: yarn reset:db
