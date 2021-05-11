@@ -33,4 +33,9 @@ router.post("/", (req, res) => {
   });
 });
 
+router.get("/:tracking_id", (req, res) => {
+  // TODO: implement
+  res.end();
+});
+
 module.exports = router;
