@@ -36,13 +36,18 @@ router.post("/", async (req, res, next) => {
       },
     });
 
-    const token = await jwtService.generate({
-      id: user.id,
-      firstname,
-      lastname,
-      email,
-      role: user.role,
-    });
+    const token = await jwtService.generate(
+      {
+        id: user.id,
+        firstname,
+        lastname,
+        email,
+        role: user.role,
+      },
+      // we'd like the jwt to expire before the access token expires (1 hour)
+      //   so the user logs in again, refreshing the access token
+      45 * 60 // 45 mins
+    );
 
     return res.json({ token });
   } catch (e) {
