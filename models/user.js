@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) =>
       },
       accessToken: DataTypes.STRING,
       accessTokenScope: DataTypes.STRING,
-      accessTokenExpiresAt: DataTypes.INTEGER,
+      accessTokenExpiresAt: DataTypes.BIGINT,
+      refreshToken: DataTypes.STRING,
     },
     {
       timestamps: true,
