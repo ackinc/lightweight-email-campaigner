@@ -1,9 +1,10 @@
 const { google } = require("googleapis");
 
-const User = require("../models/user");
+const { models } = require("../common/db");
 const { getTmpOauthClient } = require("./oauthClient");
 
 const { API_URL } = process.env;
+const { User } = models;
 
 async function sendEmails(senderEmail, subject, body, recipients) {
   const user = await User.findOne({ email: senderEmail });
