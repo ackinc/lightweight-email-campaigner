@@ -47,8 +47,9 @@ function prepareMessageForSending(from, to, subject, body) {
     `To: ${to}`,
     `Content-Type: text/html; charset=utf-8`,
     `Subject: ${subject}`,
+    "",
   ]
-    .concat(body)
+    .concat(body.replace(/\n/g, "<br />"))
     .join("\n");
 
   // base64url encoding
