@@ -14,6 +14,13 @@ async function getUserDetailsFromIdToken(idToken) {
   };
 }
 
+const getTmpOauthClient = (credentials) => {
+  const client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET);
+  client.setCredentials(credentials);
+  return client;
+};
+
 module.exports = {
+  getTmpOauthClient,
   getUserDetailsFromIdToken,
 };

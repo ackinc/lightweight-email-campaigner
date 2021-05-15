@@ -1,9 +1,7 @@
-/* eslint-disable */
-
 const { google } = require("googleapis");
-const gmail = google.gmail("v1");
 
 const User = require("../models/user");
+const { getTmpOauthClient } = require("./oauthClient");
 
 const { API_URL } = process.env;
 
@@ -16,6 +14,9 @@ async function sendEmails(senderEmail, subject, body, recipients) {
   if (Number(new Date()) >= accessTokenExpiresAt - 120) {
     throw new Error(`Your access token has expired. Please log in again.`);
   }
+
+  const tmpOauthClient = getTmpOauthClient({ access_token: accessToken });
+  const gmail = google.gmail({ version: "v1", auth: tmpOauthClient });
 
   for (let i = 0; i < recipients.length; i++) {
     const { email: toAddress, trackingId } = recipients[i];
@@ -49,6 +50,7 @@ function prepareMessageForSending(from, to, subject, body) {
     .concat(body)
     .join("\n");
 
+  // base64url encoding
   const encodedMessage = Buffer.from(message)
     .toString("base64")
     .replace(/\+/g, "-")
