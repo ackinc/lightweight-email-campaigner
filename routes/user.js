@@ -25,24 +25,24 @@ router.post("/", async (req, res, next) => {
     const { firstname, lastname, email } =
       await oauthClientService.getUserDetailsFromIdToken(idToken);
 
-    const [user] = await User.findOrCreate({
-      where: { email },
-      defaults: {
+    const [{ id: userId }] = await User.upsert(
+      {
         firstname,
         lastname,
+        email,
         accessToken,
         accessTokenScope,
         accessTokenExpiresAt,
       },
-    });
+      { returning: true }
+    );
 
     const token = await jwtService.generate(
       {
-        id: user.id,
+        id: userId,
         firstname,
         lastname,
         email,
-        role: user.role,
       },
       // we'd like the jwt to expire before the access token expires (1 hour)
       //   so the user logs in again, refreshing the access token
