@@ -4,7 +4,7 @@ const Isemail = require("isemail");
 const Joi = require("joi");
 
 const { Campaign, CampaignLead, Lead } = require("../common/db").models;
-const { sendPersonalizedMails } = require("./mail");
+const { sendEmails } = require("./mail");
 const { getRandomString } = require("../common/utils");
 
 const validNewCampaignInput = Joi.object().keys({
@@ -83,14 +83,14 @@ async function executeCampaign(userEmail, campaign, leads) {
     }))
   );
 
-  await sendPersonalizedMails(
+  await sendEmails(
     userEmail,
-    leads.map((l) => ({
-      to: l.email,
-      customArgs: { tracker: trackers[l.id] },
-    })),
     subject,
-    body
+    body,
+    leads.map((l) => ({
+      email: l.email,
+      trackingId: trackers[l.id],
+    }))
   );
 }
 

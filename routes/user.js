@@ -18,35 +18,36 @@ const router = express.Router();
 //     database error
 //     error generating JWT
 router.post("/", async (req, res, next) => {
-  const { idToken } = req.body;
+  const { idToken, accessToken, accessTokenScope, accessTokenExpiresAt } =
+    req.body;
 
   try {
-    // INACTIVE
-    // const {
-    //   refreshToken, idToken,
-    // } = await oauthClientService.exchangeAuthCodeForTokens(authCode);
-
     const { firstname, lastname, email } =
       await oauthClientService.getUserDetailsFromIdToken(idToken);
 
-    const [user] = await User.findOrCreate({
-      where: { email },
-      defaults: { firstname, lastname },
-    });
+    const [{ id: userId }] = await User.upsert(
+      {
+        firstname,
+        lastname,
+        email,
+        accessToken,
+        accessTokenScope,
+        accessTokenExpiresAt,
+      },
+      { returning: true }
+    );
 
-    // INACTIVE
-    // if (refreshToken) {
-    //   user.refreshToken = refreshToken;
-    //   await user.save();
-    // }
-
-    const token = await jwtService.generate({
-      id: user.id,
-      firstname,
-      lastname,
-      email,
-      role: user.role,
-    });
+    const token = await jwtService.generate(
+      {
+        id: userId,
+        firstname,
+        lastname,
+        email,
+      },
+      // we'd like the jwt to expire before the access token expires (1 hour)
+      //   so the user logs in again, refreshing the access token
+      45 * 60 // 45 mins
+    );
 
     return res.json({ token });
   } catch (e) {

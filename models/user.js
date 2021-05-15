@@ -11,11 +11,10 @@ module.exports = (sequelize, DataTypes) =>
           isEmail: true,
         },
       },
+      accessToken: DataTypes.STRING,
+      accessTokenScope: DataTypes.STRING,
+      accessTokenExpiresAt: DataTypes.BIGINT,
       refreshToken: DataTypes.STRING,
-      role: {
-        type: DataTypes.ENUM("user", "authorized_user"),
-        defaultValue: "user",
-      },
     },
     {
       timestamps: true,
