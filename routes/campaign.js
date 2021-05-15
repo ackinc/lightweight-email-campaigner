@@ -90,9 +90,6 @@ router.get("/:campaign_id/leads", async (req, res, next) => {
 router.post(
   "/",
   (req, res, next) => {
-    if (req.decoded.role !== "authorized_user")
-      return res.status(403).json({ error: "NOT_AUTHORIZED" });
-
     const { error } = validateNewCampaignInput(req.body);
     if (error) return res.status(400).json({ error: error.message });
 
@@ -114,6 +111,10 @@ router.post(
       await executeCampaign(userEmail, campaign, leads);
       return res.json();
     } catch (e) {
+      if (e.message.includes("access token has expired")) {
+        res.status(401).json({ error: "TOKEN_EXPIRED" });
+      }
+
       return next(e);
     }
   }
